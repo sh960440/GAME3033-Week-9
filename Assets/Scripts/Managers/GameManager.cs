@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    
     public static GameManager Instance { get; private set; }
 
+    public string gameSaveName { get; private set; } = "";
     public bool CursorActive { get; private set; } = true;
 
 
@@ -38,6 +38,12 @@ public class GameManager : MonoBehaviour
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
         }
+    }
+
+    public void SetActiveSave(string saveName)
+    {
+        if (string.IsNullOrEmpty(saveName)) return;
+        gameSaveName = saveName;
     }
 
     private void OnEnable()
