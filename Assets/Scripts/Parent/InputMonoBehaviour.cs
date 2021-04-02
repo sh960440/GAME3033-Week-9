@@ -5,11 +5,11 @@ namespace Parent
     public class InputMonoBehaviour : MonoBehaviour
     {
 
-        protected PlayerInputActions GameInput;
+        protected InputActions GameInput;
 
         protected void Awake()
         {
-            GameInput = new PlayerInputActions();
+            GameInput = new InputActions();
         }
 
          protected void OnEnable()

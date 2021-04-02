@@ -73,9 +73,10 @@ namespace Character
             PlayerAnimator.SetIKPosition(AvatarIKGoal.LeftHand, GripIKLocation.position);
         }
         
-        private void OnFire(InputAction.CallbackContext pressed)
+        private void OnFire(InputValue pressed)
         {
-            FiringPressed = pressed.ReadValue<float>() == 1f ? true : false;
+            //FiringPressed = pressed.ReadValue<float>() == 1f ? true : false;
+            FiringPressed = pressed.isPressed;
             
             if (FiringPressed)
                 StartFiring();
@@ -137,7 +138,7 @@ namespace Character
             WasFiring = false;
         }
         
-        private void OnLook(InputAction.CallbackContext obj)
+        private void OnLook(InputValue obj)
         {
             Vector3 independentMousePosition = ViewCamera.ScreenToViewportPoint(PlayerCrosshair.CurrentAimPosition);
             
@@ -148,16 +149,14 @@ namespace Character
         private new void OnEnable()
         {
             base.OnEnable();
-            GameInput.PlayerActionMap.Look.performed += OnLook;
-            GameInput.PlayerActionMap.Fire.performed += OnFire;
+            //GameInput.PlayerActionMap.Fire.performed += OnFire;
             
         }
         
         private new void OnDisable()
         {
             base.OnDisable();
-            GameInput.PlayerActionMap.Look.performed -= OnLook;
-            GameInput.PlayerActionMap.Fire.performed -= OnFire;
+            //GameInput.PlayerActionMap.Fire.performed -= OnFire;
         }
 
 
