@@ -55,10 +55,15 @@ namespace Weapons
             MainCamera = Camera.main;
         }
 
-        public void Initialize(WeaponHolder weaponHolder, CrossHairScript crossHair)
+        public void Initialize(WeaponHolder weaponHolder, WeaponScriptable weaponScriptable)
         {
             WeaponHolder = weaponHolder;
-            CrosshairComponent = crossHair;
+            CrosshairComponent = weaponHolder.Crosshair;
+
+            if (weaponScriptable)
+            {
+                WeaponStats = weaponScriptable.weaponStats;
+            }
         }
 
         public virtual void StartFiringWeapon()

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Health;
+using Character;
 
 namespace System.Health
 {
@@ -11,6 +12,8 @@ namespace System.Health
         public float MaxHealth => totalHealth;
         private float currentHealth;
         [SerializeField] private float totalHealth; 
+
+        [SerializeField] private ConsumableScriptable potionItem;
 
         // Start is called before the first frame update
         protected virtual void Start()
@@ -30,6 +33,14 @@ namespace System.Health
         public virtual void Destroy()
         {
             Destroy(gameObject);
+        }
+
+        public void HealPlayer(int effect)
+        {
+            if (currentHealth < MaxHealth)
+            {
+                currentHealth = Mathf.Clamp(currentHealth + effect, 0, MaxHealth);
+            }
         }
     }
 }

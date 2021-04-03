@@ -7,10 +7,10 @@ using Weapons;
 
 namespace Character
 {
-    public class WeaponHolder : InputMonoBehaviour
+    public class WeaponHolder : MonoBehaviour
     {
         [Header("Weapon To Spawn"), SerializeField]
-        private GameObject WeaponToSpawn;
+        private WeaponScriptable WeaponToSpawn;
 
         [SerializeField] private Transform WeaponSocketLocation;
 
@@ -22,6 +22,7 @@ namespace Character
         public PlayerController Controller => PlayerController;
         private PlayerController PlayerController;
         
+        public CrossHairScript Crosshair => PlayerCrosshair;
         private CrossHairScript PlayerCrosshair;
         private Animator PlayerAnimator;
         
@@ -38,8 +39,6 @@ namespace Character
 
         private new void Awake()
         {
-            base.Awake();
-            
             PlayerAnimator = GetComponent<Animator>();
             PlayerController = GetComponent<PlayerController>();
             if (PlayerController)
@@ -53,22 +52,12 @@ namespace Character
         // Start is called before the first frame update
         void Start()
         {
-            GameObject spawnedWeapon = Instantiate(WeaponToSpawn, WeaponSocketLocation.position, WeaponSocketLocation.rotation, WeaponSocketLocation);
-            if (!spawnedWeapon) return;
-            
-            EquippedWeapon = spawnedWeapon.GetComponent<WeaponComponent>();
-            if (!EquippedWeapon) return;
-            
-            EquippedWeapon.Initialize(this, PlayerCrosshair);
-            
-            PlayerEvents.Invoke_OnWeaponEquipped(EquippedWeapon);
-            
-            GripIKLocation = EquippedWeapon.GripLocation;
-            PlayerAnimator.SetInteger(WeaponTypeHash, (int)EquippedWeapon.WeaponInformation.WeaponType);
+            EquipWeapon(WeaponToSpawn);
         }
 
         private void OnAnimatorIK(int layerIndex)
         {
+            if (GripIKLocation == null) return;
             PlayerAnimator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1f);
             PlayerAnimator.SetIKPosition(AvatarIKGoal.LeftHand, GripIKLocation.position);
         }
@@ -87,6 +76,8 @@ namespace Character
 
         private void StartFiring()
         {
+            if (GripIKLocation == null) return;
+
             //TODO: Weapon Seems to be reloading after no bullets left
             if (EquippedWeapon.WeaponInformation.BulletsAvailable <= 0 &&
                 EquippedWeapon.WeaponInformation.BulletsInClip <= 0) return;
@@ -98,6 +89,8 @@ namespace Character
 
         private void StopFiring()
         {
+            if (GripIKLocation == null) return;
+
             PlayerController.IsFiring = false;
             PlayerAnimator.SetBool(IsFiringHash, false);
             EquippedWeapon.StopFiringWeapon();
@@ -111,6 +104,8 @@ namespace Character
 
         public void StartReloading()
         {
+            if (GripIKLocation == null) return;
+
             if (EquippedWeapon.WeaponInformation.BulletsAvailable <= 0 && PlayerController.IsFiring)
             {
                 StopFiring();
@@ -126,6 +121,8 @@ namespace Character
         
         private void StopReloading()
         {
+            if (GripIKLocation == null) return;
+
             if (PlayerAnimator.GetBool(IsReloadingHash)) return;
             
             PlayerController.IsReloading = false;
@@ -146,19 +143,30 @@ namespace Character
             PlayerAnimator.SetFloat(AimVerticalHash, independentMousePosition.y);
         }
         
-        private new void OnEnable()
+        public void EquipWeapon(WeaponScriptable weaponScriptable)
         {
-            base.OnEnable();
-            //GameInput.PlayerActionMap.Fire.performed += OnFire;
+            if (weaponScriptable == null) return;
+
+            GameObject spawnedWeapon = Instantiate(weaponScriptable.itemPrefab, WeaponSocketLocation.position, WeaponSocketLocation.rotation, WeaponSocketLocation);
+            if (!spawnedWeapon) return;
             
+            EquippedWeapon = spawnedWeapon.GetComponent<WeaponComponent>();
+            if (!EquippedWeapon) return;
+            
+            EquippedWeapon.Initialize(this, weaponScriptable);
+            
+            PlayerEvents.Invoke_OnWeaponEquipped(EquippedWeapon);
+            
+            GripIKLocation = EquippedWeapon.GripLocation;
+            PlayerAnimator.SetInteger(WeaponTypeHash, (int)EquippedWeapon.WeaponInformation.WeaponType);
         }
-        
-        private new void OnDisable()
+
+        public void UnEquipItem()
         {
-            base.OnDisable();
-            //GameInput.PlayerActionMap.Fire.performed -= OnFire;
+            if (EquippedWeapon == null) return;
+
+            Destroy(EquippedWeapon.gameObject);
+            EquippedWeapon = null;
         }
-
-
     }
 }
