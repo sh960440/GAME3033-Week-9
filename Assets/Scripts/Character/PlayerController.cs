@@ -13,12 +13,16 @@ namespace Character
         public bool IsReloading;
         public bool IsJumping;
         public bool IsRunning;
+        public bool InInventory;
 
         public CrossHairScript CrossHair => CrossHairComponent;
         [SerializeField] private CrossHairScript CrossHairComponent;
 
         public HealthComponent Health => HealthComponent;
         private HealthComponent HealthComponent;
+
+        public InventoryComponent Inventory => InventoryComponent;
+        private InventoryComponent InventoryComponent;
 
         public WeaponHolder WeaponHolder => WeaponHolderComponent;
         private WeaponHolder WeaponHolderComponent;
@@ -33,6 +37,10 @@ namespace Character
             if (HealthComponent == null)
             {
                 HealthComponent = GetComponent<HealthComponent>();
+            }
+            if (InventoryComponent == null)
+            {
+                InventoryComponent = GetComponent<InventoryComponent>();
             }
             if (WeaponHolderComponent == null)
             {
@@ -50,6 +58,34 @@ namespace Character
         {
             Debug.Log("Unpause");
             PauseManager.Instance.UnPauseGame();
+        }
+
+        public void OnInventory(InputValue button)
+        {
+            if (InInventory)
+            {
+                InInventory = false;
+                OpenInventory(false);
+            }
+            else
+            {
+                InInventory = true;
+                OpenInventory(true);
+            }
+        }
+
+        public void OpenInventory(bool open)
+        {
+            if (open)
+            {
+                PauseManager.Instance.PauseGame();
+                UIController.EnableInventoryMenu();
+            }
+            else
+            {
+                PauseManager.Instance.UnPauseGame();
+                UIController.EnableGameMenu();
+            }
         }
 
         public void PauseMenu()

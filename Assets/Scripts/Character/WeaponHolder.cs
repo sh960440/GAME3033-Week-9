@@ -52,7 +52,7 @@ namespace Character
         // Start is called before the first frame update
         void Start()
         {
-            EquipWeapon(WeaponToSpawn);
+            if (WeaponToSpawn) EquipWeapon(WeaponToSpawn);
         }
 
         private void OnAnimatorIK(int layerIndex)
@@ -66,6 +66,8 @@ namespace Character
         {
             //FiringPressed = pressed.ReadValue<float>() == 1f ? true : false;
             FiringPressed = pressed.isPressed;
+
+            if (EquippedWeapon == null) return;
             
             if (FiringPressed)
                 StartFiring();

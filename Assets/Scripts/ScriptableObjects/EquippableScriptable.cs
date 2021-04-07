@@ -8,17 +8,21 @@ public abstract class EquippableScriptable : ItemScriptable
 {
     public bool Equipped
     {
-        get => m_equipped;
+        get => m_Equipped;
         set
         {
-            m_equipped = value;
+            m_Equipped = value;
+            OnEquipStatusChange?.Invoke();
         }
     }
-    private bool m_equipped;
+    private bool m_Equipped = false;
+
+    public delegate void EquipStatusChange();
+    public event EquipStatusChange OnEquipStatusChange;
 
     public override void UseItem(PlayerController controller)
     {
-        m_equipped = !m_equipped;
+        m_Equipped = !m_Equipped;
     }
 }
 
