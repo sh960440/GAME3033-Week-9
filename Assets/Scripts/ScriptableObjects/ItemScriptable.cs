@@ -42,6 +42,7 @@ public abstract class ItemScriptable : ScriptableObject
     public virtual void DeleteItem(PlayerController controller)
     {
         OnItemDestroyed?.Invoke();
+        controller.Inventory.DeleteItem(this);
     }
 
     public virtual void DropItem(PlayerController controller)

@@ -41,7 +41,7 @@ public class InventoryComponent : MonoBehaviour
 
             ItemScriptable itemClone = Instantiate(item);
             itemClone.Initialize(controller);
-            itemClone.SetAmount(amount == 1 ? item.Amount : amount);
+            itemClone.SetAmount(amount <= 1 ? item.Amount : amount);
             Items.Add(itemClone);
         }
     }

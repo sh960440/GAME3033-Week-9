@@ -1,23 +1,46 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class ItemSlotAmountWidget : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private TMP_Text amountText;
+    private ItemScriptable Item;
+
+    private void Awake()
     {
-        
+        HideWidget();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void ShowWidget()
     {
-        
+        gameObject.SetActive(true);
+    }
+
+    public void HideWidget()
+    {
+        gameObject.SetActive(false);
     }
 
     public void Initialize(ItemScriptable item)
     {
-        
+        if (!item.stackable) return;
+
+        Item = item;
+        ShowWidget();
+        Item.OnAmountChange += OnAmountChange;
+        OnAmountChange();
+    }
+
+    private void OnAmountChange()
+    {
+        amountText.text = Item.Amount.ToString();
+    }
+
+    private void OnDisable()
+    {
+        if (Item)
+            Item.OnAmountChange -= OnAmountChange;
     }
 }

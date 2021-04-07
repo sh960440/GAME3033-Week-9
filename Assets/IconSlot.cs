@@ -10,15 +10,13 @@ public class IconSlot : MonoBehaviour
     private Button itemButton;
     private TMP_Text itemText;
 
-    private ItemSlotAmountWidget amountWidget;
-    private ItemSlotEquippedWidget equippedWidget;
+    [SerializeField] private ItemSlotAmountWidget amountWidget;
+    [SerializeField] private ItemSlotEquippedWidget equippedWidget;
 
     void Awake()
     {
         itemButton = GetComponent<Button>();
         itemText = GetComponentInChildren<TMP_Text>();
-        amountWidget = GetComponentInChildren<ItemSlotAmountWidget>();
-        equippedWidget = GetComponentInChildren<ItemSlotEquippedWidget>();
     }
 
     public void Initialize(ItemScriptable item)
@@ -42,5 +40,11 @@ public class IconSlot : MonoBehaviour
     {
         Item = null;
         Destroy(gameObject);
+    }
+
+    private void OnDisable()
+    {
+        if (Item)
+            Item.OnItemDestroyed -= OnItemDestroyed;
     }
 }
