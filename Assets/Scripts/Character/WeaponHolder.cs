@@ -28,7 +28,8 @@ namespace Character
         
         //Ref
         private Camera ViewCamera;
-        private WeaponComponent EquippedWeapon;
+        public WeaponComponent EquippedWeapon => WeaponComponent;
+        private WeaponComponent WeaponComponent;
         
         private static readonly int AimHorizontalHash = Animator.StringToHash("AimHorizontal");
         private static readonly int AimVerticalHash = Animator.StringToHash("AimVertical");
@@ -67,7 +68,7 @@ namespace Character
             //FiringPressed = pressed.ReadValue<float>() == 1f ? true : false;
             FiringPressed = pressed.isPressed;
 
-            if (EquippedWeapon == null) return;
+            if (WeaponComponent == null) return;
             
             if (FiringPressed)
                 StartFiring();
@@ -81,12 +82,12 @@ namespace Character
             if (GripIKLocation == null) return;
 
             //TODO: Weapon Seems to be reloading after no bullets left
-            if (EquippedWeapon.WeaponInformation.BulletsAvailable <= 0 &&
-                EquippedWeapon.WeaponInformation.BulletsInClip <= 0) return;
+            if (WeaponComponent.WeaponInformation.BulletsAvailable <= 0 &&
+                WeaponComponent.WeaponInformation.BulletsInClip <= 0) return;
        
             PlayerController.IsFiring = true;
             PlayerAnimator.SetBool(IsFiringHash, true);
-            EquippedWeapon.StartFiringWeapon();
+            WeaponComponent.StartFiringWeapon();
         }
 
         private void StopFiring()
@@ -95,7 +96,7 @@ namespace Character
 
             PlayerController.IsFiring = false;
             PlayerAnimator.SetBool(IsFiringHash, false);
-            EquippedWeapon.StopFiringWeapon();
+            WeaponComponent.StopFiringWeapon();
         }
 
         
@@ -108,7 +109,7 @@ namespace Character
         {
             if (GripIKLocation == null) return;
 
-            if (EquippedWeapon.WeaponInformation.BulletsAvailable <= 0 && PlayerController.IsFiring)
+            if (WeaponComponent.WeaponInformation.BulletsAvailable <= 0 && PlayerController.IsFiring)
             {
                 StopFiring();
                 return;
@@ -116,7 +117,7 @@ namespace Character
 
             PlayerController.IsReloading = true;
             PlayerAnimator.SetBool(IsReloadingHash, true);
-            EquippedWeapon.StartReloading();
+            WeaponComponent.StartReloading();
             
             InvokeRepeating(nameof(StopReloading), 0, .1f);
         }
@@ -128,7 +129,7 @@ namespace Character
             if (PlayerAnimator.GetBool(IsReloadingHash)) return;
             
             PlayerController.IsReloading = false;
-            EquippedWeapon.StopReloading();
+            WeaponComponent.StopReloading();
             CancelInvoke(nameof(StopReloading));
             
             if (!WasFiring || !FiringPressed) return;
@@ -152,23 +153,23 @@ namespace Character
             GameObject spawnedWeapon = Instantiate(weaponScriptable.itemPrefab, WeaponSocketLocation.position, WeaponSocketLocation.rotation, WeaponSocketLocation);
             if (!spawnedWeapon) return;
             
-            EquippedWeapon = spawnedWeapon.GetComponent<WeaponComponent>();
-            if (!EquippedWeapon) return;
+            WeaponComponent = spawnedWeapon.GetComponent<WeaponComponent>();
+            if (!WeaponComponent) return;
             
-            EquippedWeapon.Initialize(this, weaponScriptable);
+            WeaponComponent.Initialize(this, weaponScriptable);
             
-            PlayerEvents.Invoke_OnWeaponEquipped(EquippedWeapon);
+            PlayerEvents.Invoke_OnWeaponEquipped(WeaponComponent);
             
-            GripIKLocation = EquippedWeapon.GripLocation;
-            PlayerAnimator.SetInteger(WeaponTypeHash, (int)EquippedWeapon.WeaponInformation.WeaponType);
+            GripIKLocation = WeaponComponent.GripLocation;
+            PlayerAnimator.SetInteger(WeaponTypeHash, (int)WeaponComponent.WeaponInformation.WeaponType);
         }
 
         public void UnEquipItem()
         {
-            if (EquippedWeapon == null) return;
+            if (WeaponComponent == null) return;
 
-            Destroy(EquippedWeapon.gameObject);
-            EquippedWeapon = null;
+            Destroy(WeaponComponent.gameObject);
+            WeaponComponent = null;
         }
     }
 }
