@@ -3,42 +3,39 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StateMachine : MonoBehaviour
+public class StateMachine<T> : MonoBehaviour where T : Enum
 {
-    public State CurrentState { get; private set; }
-    protected Dictionary<ZombieStateType, State> States;
+    public T ActiveEnumState { get; private set; }
+    public State<T> CurrentState { get; private set; }
+    protected Dictionary<T, State<T>> States;
     private bool Running;
 
     private void Awake()
     {
-        States = new Dictionary<ZombieStateType, State>();
+        States = new Dictionary<T, State<T>>();
     }
 
-    public void Initialize(ZombieStateType startingState)
+    public void Initialize(T startingState)
     {
         if (States.ContainsKey(startingState))
         {
             ChanceState(startingState);
         }
-        else if(States.ContainsKey(ZombieStateType.Idle))
-        {
-            ChanceState(ZombieStateType.Idle);
-        }
     }
 
-    public void AddState(ZombieStateType stateName, State state)
+    public void AddState(T stateName, State<T> state)
     {
         if (States.ContainsKey(stateName)) return;
         States.Add(stateName, state);
     }
 
-    public void RemoveState(ZombieStateType stateName)
+    public void RemoveState(T stateName)
     {
         if (!States.ContainsKey(stateName)) return;
         States.Remove(stateName);
     }
 
-    public void ChanceState(ZombieStateType nextState)
+    public void ChanceState(T nextState)
     {
         if (Running)
         {
@@ -46,7 +43,8 @@ public class StateMachine : MonoBehaviour
         }
 
         if (!States.ContainsKey(nextState)) return;
-
+        
+        ActiveEnumState = nextState;
         CurrentState = States[nextState];
         CurrentState.Start();
 

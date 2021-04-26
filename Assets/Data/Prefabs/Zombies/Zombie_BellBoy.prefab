@@ -3792,9 +3792,9 @@ GameObject:
   - component: {fileID: 8888877706827172332}
   - component: {fileID: 3247615056940780104}
   - component: {fileID: 5945016276443633037}
-  - component: {fileID: 146515190254360176}
   - component: {fileID: 3314397001611177643}
   - component: {fileID: 5293351222734597411}
+  - component: {fileID: 3729362374203946405}
   m_Layer: 0
   m_Name: Zombie_BellBoy
   m_TagString: Untagged
@@ -3899,6 +3899,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   totalHealth: 100
+  potionItem: {fileID: 0}
 --- !u!114 &5945016276443633037
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3914,18 +3915,6 @@ MonoBehaviour:
   damege: 5
   FollowTarget: {fileID: 0}
   _Debug: 0
---- !u!114 &146515190254360176
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8793949851637857482}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 02f4cc71527dbd34196fe690d4b218fd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!195 &3314397001611177643
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -3962,6 +3951,18 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &3729362374203946405
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8793949851637857482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e21a38e332ab0974094aa4bf1fa61692, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8793950870416066462
 GameObject:
   m_ObjectHideFlags: 0

@@ -5,11 +5,13 @@ using Character;
 using System;
 using System.Linq;
 using UI.Menu;
+using Enemies;
 
 [Serializable]
 public class GameSaveData
 {
     public PlayerSaveData PlayerSaveData;
+    public SpawnerSaveDataList SpawnerSaveDataList;
 
     public GameSaveData()
     {
@@ -57,6 +59,16 @@ public class SaveSystem : MonoBehaviour
         ISavable playerSaveObject = savableObjects.First(monoObject => monoObject is PlayerController) as ISavable;
         GameSave.PlayerSaveData = (PlayerSaveData)playerSaveObject?.SaveData();
 
+        SpawnerSaveDataList spawnerList = new SpawnerSaveDataList();
+        var spawnerDataList = savableObjects.OfType<ZombieSpawner>();
+        foreach (ZombieSpawner spawner in spawnerDataList)
+        {
+            ISavable saveObject = spawner.GetComponent<ISavable>();
+            spawnerList.SpawnerData.Add(saveObject?.SaveData() as SpawnerSaveData);
+        }
+
+        GameSave.SpawnerSaveDataList = spawnerList;
+
         string jsonString = JsonUtility.ToJson(GameSave);
         PlayerPrefs.SetString(GameManager.Instance.gameSaveName, jsonString);
 
@@ -89,5 +101,11 @@ public class SaveSystem : MonoBehaviour
 
         ISavable playerObject = savableObjects.First(monoObject => monoObject is PlayerController) as ISavable;
         playerObject?.LoadData(GameSave.PlayerSaveData);
+
+        foreach (SpawnerSaveData spawnerData in GameSave.SpawnerSaveDataList.SpawnerData)
+        {
+            ISavable saveObject = savableObjects.Find(savableObject => spawnerData.Name == savableObject.name) as ISavable;
+            saveObject?.LoadData(spawnerData);
+        }
     }
 }

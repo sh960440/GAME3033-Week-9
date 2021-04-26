@@ -5,18 +5,17 @@ using System.Health;
 
 public class ZombieHealthComponent : HealthComponent
 {
-    private StateMachine ZombieStateMachine;
+    private ZombieStateMachine ZombieStateMachine;
     // Start is called before the first frame update
     void Awake()
     {
-        ZombieStateMachine = GetComponent<StateMachine>();
+        ZombieStateMachine = GetComponent<ZombieStateMachine>();
     }
 
     public override void Destroy()
     {
-        //if (ZombieStateMachine.)
-
-        //base.Destroy();
+        base.Destroy();
         ZombieStateMachine.ChanceState(ZombieStateType.Dead);
+        gameObject.GetComponent<Collider>().enabled = false;
     }
 }
